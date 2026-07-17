@@ -6,7 +6,7 @@ from .routers import oauth,user,oraganization_member,organization,project,task
 from .ai import ai_router
 
 
-app = FastAPI()
+app = FastAPI(title="Projects Management System API")
 
 
 models.Base.metadata.create_all(bind=engine)
