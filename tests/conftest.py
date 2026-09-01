@@ -14,23 +14,18 @@ import pytest
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False,expire_on_commit=False)
-
-
-Base.metadata.create_all(bind=engine)
-
+TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, expire_on_commit=False)
 
 
 @pytest.fixture()
 def session():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
-    db=TestingSessionLocal()
+    db = TestingSessionLocal()
     try:
         yield db
     finally:
         db.close()
-
 
 
 @pytest.fixture()
@@ -39,9 +34,10 @@ def client(session):
         try:
             yield session
         finally:
-            session.close()
+            pass
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
+    app.dependency_overrides.clear()
 
 @pytest.fixture
 def test_user2(client):
