@@ -6,10 +6,13 @@ from .routers import oauth,user,oraganization_member,organization,project,task
 from .ai import ai_router
 
 
-app = FastAPI(title="Projects Management System API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    models.Base.metadata.create_all(bind=engine)
+    yield
 
 
-models.Base.metadata.create_all(bind=engine)
+app = FastAPI(title="Projects Management System API", lifespan=lifespan)
 
 app.include_router(oauth.router)
 app.include_router(user.router)
